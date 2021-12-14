@@ -6,24 +6,31 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Group root = new Group();
         Canvas canvas = new Canvas(1000, 1000);
+        FileInputStream inputstream = new FileInputStream("C:\\Users\\groho\\Downloads\\white-pawn.png");
+        Image image = new Image(inputstream);
+        //Image image = new Image("C:\\Users\\groho\\Downloads\\white-pawn.png");
+        ImageView iv = new ImageView();
+        iv.setImage(image);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        drawBord(gc);
-        drawSymbols(gc);
-        stage.setTitle("Hello!");
+        redraw(gc, canvas.getWidth(), canvas.getHeight());
+        stage.setTitle("Chess");
         root.getChildren().add(canvas);
+        root.getChildren().add(iv);
         Scene scene = new Scene(root);
-        //Scene scene = new Scene(fxmlLoader.load(), 400, 300);
         stage.setScene(scene);
         stage.show();
     }
@@ -88,6 +95,10 @@ public class HelloApplication extends Application {
             gc.fillText(Character.toString(letters.charAt(j)), lettersX, lettersY);
             lettersX += 100;
         }
-
+    }
+    private void redraw(GraphicsContext gc, double cvsWidth, double cvsHeight) {
+        gc.clearRect(0, 0, cvsWidth, cvsHeight);
+        drawBord(gc);
+        drawSymbols(gc);
     }
 }
