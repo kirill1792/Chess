@@ -14,22 +14,39 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Group root = new Group();
         Canvas canvas = new Canvas(1000, 1000);
-        FileInputStream inputstream = new FileInputStream("C:\\Users\\groho\\Downloads\\white-pawn.png");
-        Image image = new Image(inputstream);
-        //Image image = new Image("C:\\Users\\groho\\Downloads\\white-pawn.png");
-        ImageView iv = new ImageView();
-        iv.setImage(image);
+        Board board = new Board();
+        board.setFields();
+        Image image = new Image(new FileInputStream("src/main/resources/images/black-bishop.png"));
+        Bishop bishop = new Bishop(6, 6, new ImageView());
+        bishop.myImage.setImage(image);
+        bishop.myImage.setFitWidth(90);
+        bishop.myImage.setFitHeight(90);
+        board.setCell(bishop.getRow(), bishop.getColumn(), bishop);
+        System.out.println(board.getFields());
+       //FileInputStream inputstream = new FileInputStream("src/main/resources/images/black-queen.png");
+       //Image image = new Image(inputstream);
+       //Image image = new Image("C:\\Users\\groho\\Downloads\\white-pawn.png");
+       //ImageView iv = new ImageView();
+       //iv.setFitHeight(90);
+       //iv.setFitWidth(90);
+       //iv.setX(206);
+       //iv.setY(206);
+       //iv.setImage(image);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        redraw(gc, canvas.getWidth(), canvas.getHeight());
+        redraw(gc, canvas.getWidth(), canvas.getHeight(), board.getFields());
         stage.setTitle("Chess");
         root.getChildren().add(canvas);
-        root.getChildren().add(iv);
+        root.getChildren().add(bishop.myImage);
+        //root.getChildren().remove(iv);
+        //redraw(gc, canvas.getWidth(), canvas.getHeight());
+        //gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
@@ -96,9 +113,23 @@ public class App extends Application {
             lettersX += 100;
         }
     }
-    private void redraw(GraphicsContext gc, double cvsWidth, double cvsHeight) {
+    private void redraw(GraphicsContext gc, double cvsWidth, double cvsHeight, ArrayList<ArrayList<Figure>> fields) {
         gc.clearRect(0, 0, cvsWidth, cvsHeight);
         drawBord(gc);
         drawSymbols(gc);
+        drawFigures(fields);
+    }
+
+    private void drawFigures(ArrayList<ArrayList<Figure>> fields){
+        for (ArrayList<Figure> field : fields) {
+            for (Figure value : field) {
+                if (value != null) {
+                    int xPos = 100 + value.getColumn() * 100 + 6;
+                    int yPos = 100 + value.getRow() * 100 + 6;
+                    value.myImage.setX(xPos);
+                    value.myImage.setY(yPos);
+                }
+            }
+        }
     }
 }
