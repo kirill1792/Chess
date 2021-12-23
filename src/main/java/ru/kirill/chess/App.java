@@ -1,18 +1,13 @@
 package ru.kirill.chess;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -21,31 +16,15 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         Group root = new Group();
         Canvas canvas = new Canvas(1000, 1000);
-        Board board = new Board();
-        board.setFields();
-        Image image = new Image(new FileInputStream("src/main/resources/images/black-bishop.png"));
-        Bishop bishop = new Bishop(6, 6, new ImageView());
-        bishop.myImage.setImage(image);
-        bishop.myImage.setFitWidth(90);
-        bishop.myImage.setFitHeight(90);
-        board.setCell(bishop.getRow(), bishop.getColumn(), bishop);
-        System.out.println(board.getFields());
-       //FileInputStream inputstream = new FileInputStream("src/main/resources/images/black-queen.png");
-       //Image image = new Image(inputstream);
-       //Image image = new Image("C:\\Users\\groho\\Downloads\\white-pawn.png");
-       //ImageView iv = new ImageView();
-       //iv.setFitHeight(90);
-       //iv.setFitWidth(90);
-       //iv.setX(206);
-       //iv.setY(206);
-       //iv.setImage(image);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        redraw(gc, canvas.getWidth(), canvas.getHeight(), board.getFields());
         stage.setTitle("Chess");
         root.getChildren().add(canvas);
-        root.getChildren().add(bishop.myImage);
+        Game game = new Game(root);
+        game.setUpGame();
+        game.createFigures();
         //root.getChildren().remove(iv);
-        //redraw(gc, canvas.getWidth(), canvas.getHeight());
+        redraw(gc, canvas.getWidth(), canvas.getHeight(), game.board.getFields());
+        System.out.println(root.getChildren().size());
         //gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         Scene scene = new Scene(root);
         stage.setScene(scene);
@@ -56,7 +35,7 @@ public class App extends Application {
         launch();
     }
 
-    private void drawBord (GraphicsContext gc) {
+    private static void drawBord (GraphicsContext gc) {
           int squareWidth = 100;
           int squareHeight = 100;
           int baseX = 100;
@@ -89,7 +68,7 @@ public class App extends Application {
         gc.strokeRect(100, 100, 800,800);
     }
 
-    private void drawSymbols(GraphicsContext gc){
+    private static void drawSymbols(GraphicsContext gc){
         String numbers = "87654321";
         String letters = "abcdefgh";
 
@@ -113,21 +92,25 @@ public class App extends Application {
             lettersX += 100;
         }
     }
-    private void redraw(GraphicsContext gc, double cvsWidth, double cvsHeight, ArrayList<ArrayList<Figure>> fields) {
+    public static void redraw(GraphicsContext gc, double cvsWidth, double cvsHeight, ArrayList<ArrayList<Figure>> fields) {
         gc.clearRect(0, 0, cvsWidth, cvsHeight);
         drawBord(gc);
         drawSymbols(gc);
         drawFigures(fields);
     }
 
-    private void drawFigures(ArrayList<ArrayList<Figure>> fields){
-        for (ArrayList<Figure> field : fields) {
-            for (Figure value : field) {
-                if (value != null) {
-                    int xPos = 100 + value.getColumn() * 100 + 6;
-                    int yPos = 100 + value.getRow() * 100 + 6;
-                    value.myImage.setX(xPos);
-                    value.myImage.setY(yPos);
+    private static void drawFigures(ArrayList<ArrayList<Figure>> fields){
+        for (int i = 0; i < fields.size(); i++) {
+            for ( int j = 0; j < fields.get(i).size(); j++) {
+                if (fields.get(i).get(j) != null) {
+                    Figure figure = fields.get(i).get(j);
+                    int xPos = 100 + j * 100 + 6;
+                    int yPos = 100 + i * 100 + 6;
+                    figure.getMyImage().setX(xPos);
+                    figure.getMyImage().setY(yPos);
+                    figure.getMyImage().setFitHeight(90);
+                    figure.getMyImage().setFitWidth(90);
+                    figure.getMyImage().setVisible(true);
                 }
             }
         }

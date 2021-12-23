@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Board {
     private ArrayList<ArrayList<Figure>> fields = new ArrayList<>();
 
-    public void setField() {
+    public void setFields() {
         ArrayList<ArrayList<Figure>> arr = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             arr.add(new ArrayList<>());
@@ -18,5 +18,9 @@ public class Board {
 
     public ArrayList<ArrayList<Figure>> getFields() {
         return fields;
+    }
+
+    public void setCell(int row, int column, Figure figure) {
+        fields.get(row).set(column, figure);
     }
 }
