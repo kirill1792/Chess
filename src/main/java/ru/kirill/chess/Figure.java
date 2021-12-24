@@ -5,6 +5,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public abstract class Figure {
     private ImageView myImage;
@@ -26,6 +27,10 @@ public abstract class Figure {
 
     public ImageView getMyImage() {
         return myImage;
+    }
+
+    public boolean checkForFriendlyFig(int row, int column, ArrayList<ArrayList<Figure>> fields) {
+        return !fields.get(row).get(column).color.equals(this.color);
     }
 
     public abstract void calculatePossibleMoves();

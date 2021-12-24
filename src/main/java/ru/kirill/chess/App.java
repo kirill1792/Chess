@@ -22,10 +22,7 @@ public class App extends Application {
         Game game = new Game(root);
         game.setUpGame();
         game.createFigures();
-        //root.getChildren().remove(iv);
         redraw(gc, canvas.getWidth(), canvas.getHeight(), game.board.getFields());
-        System.out.println(root.getChildren().size());
-        //gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();

@@ -5,9 +5,11 @@ import javafx.scene.Group;
 import java.io.FileNotFoundException;
 
 public class Game {
-    private String turn = "white";
+    private Player turn = null;
     public Board board;
     public Group root;
+    private Player whitePlayer;
+    private Player blackPlayer;
 
     public Game(Group root) {
         this.root = root;
@@ -15,17 +17,30 @@ public class Game {
     public void setUpGame() {
         board = new Board();
         board.setFields();
+        Player player1 = new Player();
+        Player player2 = new Player();
+        defineColor(player1, player2);
+        turn = whitePlayer;
     }
 
-    private void defineColor () {
+    private void defineColor (Player player1, Player player2) {
+        Player[] players = {player1, player2};
+        int rand = (int) (Math.random() * 2 + 1);
+        whitePlayer = players[rand];
+        if(players[0].equals(whitePlayer)) {
+            blackPlayer = players[1];
+        }
+        else  {
+            blackPlayer = players[0];
+        }
     }
 
     private void changeTurn () {
-        if(turn.equals("white")) {
-            turn = "black";
+        if(turn.equals(whitePlayer)) {
+            turn = blackPlayer;
         }
         else {
-            turn = "white";
+            turn = whitePlayer;
         }
     }
 
