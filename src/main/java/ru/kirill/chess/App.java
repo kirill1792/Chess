@@ -1,17 +1,19 @@
 package ru.kirill.chess;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class App extends Application {
+public class App extends Application{
     @Override
     public void start(Stage stage) throws IOException {
         Group root = new Group();
@@ -19,12 +21,20 @@ public class App extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         stage.setTitle("Chess");
         root.getChildren().add(canvas);
-        Game game = new Game(root);
+        Game game = new Game(root, gc);
         game.setUpGame();
-        game.createFigures();
-        redraw(gc, canvas.getWidth(), canvas.getHeight(), game.board.getFields());
+        //redraw(gc, canvas.getWidth(), canvas.getHeight(), game.board.getFields());
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (mouseEvent.getX() >= 100 & mouseEvent.getX() <= 900 & mouseEvent.getY() >= 100 & mouseEvent.getY() <= 900) {
+                    System.out.println("Нажали на доску");
+                    game.processCoords(mouseEvent.getX(), mouseEvent.getY());
+                }
+            }
+        });
         stage.show();
     }
 

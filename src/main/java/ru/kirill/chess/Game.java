@@ -1,31 +1,39 @@
 package ru.kirill.chess;
 
 import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 public class Game {
     private Player turn = null;
     public Board board;
     public Group root;
+    private GraphicsContext gc;
     private Player whitePlayer;
     private Player blackPlayer;
 
-    public Game(Group root) {
+    public Game(Group root, GraphicsContext gc) {
         this.root = root;
+        this.gc = gc;
     }
-    public void setUpGame() {
+    public void setUpGame() throws FileNotFoundException {
         board = new Board();
         board.setFields();
-        Player player1 = new Player();
-        Player player2 = new Player();
+        Player player1 = new Player("Вася");
+        Player player2 = new Player("Петя");
         defineColor(player1, player2);
         turn = whitePlayer;
+        createFigures();
+        App.redraw(gc, 1000, 1000, board.getFields());
     }
 
     private void defineColor (Player player1, Player player2) {
         Player[] players = {player1, player2};
-        int rand = (int) (Math.random() * 2 + 1);
+        int rand = (int) (Math.random() * 2);
+        System.out.println(rand);
         whitePlayer = players[rand];
         if(players[0].equals(whitePlayer)) {
             blackPlayer = players[1];
@@ -45,6 +53,9 @@ public class Game {
     }
 
     public void createFigures() throws FileNotFoundException {
+         ArrayList<Figure> whitePlayerFigures = new ArrayList<>();
+         ArrayList<Figure> blackPlayerFigures = new ArrayList<>();
+
          Figure[] whiteFigures = {new Rook("white"),
                  new Knight("white"),
                  new Bishop("white"),
@@ -71,18 +82,42 @@ public class Game {
             Pawn blackPawn = new Pawn("black");
             board.setCell(row, column, currentFig);
             root.getChildren().add(currentFig.getMyImage());
+
             board.setCell(row + 1, column, blackPawn);
             root.getChildren().add(blackPawn.getMyImage());
+            blackPlayerFigures.add(currentFig);
+            blackPlayerFigures.add(blackPawn);
 
             Figure currentFigOpposite = whiteFigures[i];
             Pawn whitePawn = new Pawn("white");
             board.setCell(row + 7, column, currentFigOpposite);
             root.getChildren().add(currentFigOpposite.getMyImage());
+
             board.setCell(row + 6, column, whitePawn);
             root.getChildren().add(whitePawn.getMyImage());
+            whitePlayerFigures.add(currentFigOpposite);
+            whitePlayerFigures.add(whitePawn);
 
             column++;
         }
+
+        whitePlayer.myFigures = whitePlayerFigures;
+        blackPlayer.myFigures = blackPlayerFigures;
+
         System.out.println(board.getFields());
+    }
+
+    public void processCoords(double x, double y) {
+          int row = (int) Math.floor((y - 100) / 100);
+          int column = (int) Math.floor((x - 100) / 100);
+          boolean result = turn.makeMove(row, column, board);
+          if (result) {
+              changeTurn();
+              System.out.println("Смена хода");
+          }
+          App.redraw(gc, 1000, 1000, board.getFields());
+          System.out.println(board.getFields());
+          System.out.println("Перерисовка");
+          System.out.println("Ходит:" + turn.name);
     }
 }
