@@ -1,6 +1,7 @@
 package ru.kirill.chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Player {
     public Figure selectedFigure = null;
@@ -32,12 +33,18 @@ public class Player {
          }
          else if (board.getFields().get(row).get(column) == null) {
              if (checkSelectedFigure()) {
-                 System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
                  ArrayList<Integer> coordinates = board.getElementCoordinates(selectedFigure);
-                 board.setCell(coordinates.get(0), coordinates.get(1), null);
-                 board.setCell(row, column, selectedFigure);
-                 selectedFigure = null;
-                 return true;
+                 if (selectedFigure.canMove(Arrays.asList(row, column), coordinates, board)) {
+                     System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
+                     board.setCell(coordinates.get(0), coordinates.get(1), null);
+                     board.setCell(row, column, selectedFigure);
+                     selectedFigure = null;
+                     return true;
+                 }
+                 else {
+                     System.out.println("Так нельзя ходить");
+                     return false;
+                 }
              }
              else {
                  System.out.println("Нельзя походить: нет выбранной фигуры");
@@ -47,7 +54,19 @@ public class Player {
          else {
              if (checkSelectedFigure()) {
                  System.out.println("Пробую побить фигуру");
-                 return false;
+                 ArrayList<Integer> coordinates = board.getElementCoordinates(selectedFigure);
+                 if (selectedFigure.canMove(Arrays.asList(row, column), coordinates, board)) {
+                     System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
+                     board.setCell(coordinates.get(0), coordinates.get(1), null);
+                     board.getFields().get(row).get(column).getMyImage().setVisible(false);
+                     board.setCell(row, column, selectedFigure);
+                     selectedFigure = null;
+                     return true;
+                 }
+                 else {
+                     System.out.println("Так нельзя ходить");
+                     return false;
+                 }
              }
              else {
                  System.out.println("Нельзя побить фигуру: нет выбранной фигуры");
@@ -56,3 +75,10 @@ public class Player {
          }
     }
 }
+
+/*System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
+        ArrayList<Integer> coordinates = board.getElementCoordinates(selectedFigure);
+        board.setCell(coordinates.get(0), coordinates.get(1), null);
+        board.setCell(row, column, selectedFigure);
+        selectedFigure = null;
+        return true;*/

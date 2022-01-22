@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Figure {
     private ImageView myImage;
@@ -29,9 +30,15 @@ public abstract class Figure {
         return myImage;
     }
 
-    public boolean checkForFriendlyFig(int row, int column, ArrayList<ArrayList<Figure>> fields) {
-        return !fields.get(row).get(column).color.equals(this.color);
+    public boolean canMove(List<Integer> coordinatesToMove, List<Integer> selfCoordinates, Board board) {
+        List<List<Integer>> result = calculatePossibleMoves(selfCoordinates, board);
+        for (List<Integer> integers : result) {
+            if (integers.equals(coordinatesToMove)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public abstract void calculatePossibleMoves();
+    public abstract  List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board);
 }
