@@ -2,10 +2,12 @@ package ru.kirill.chess;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Player {
     public Figure selectedFigure = null;
     public ArrayList<Figure> myFigures = null;
+    public King myKing;
     public String name;
 
     public Player(String name) {
@@ -15,7 +17,21 @@ public class Player {
 
     //public boolean isMyFigure(Figure figure) {
         //return myFigures.contains(figure);
-   // }
+   //}
+
+
+    public void setMyKing() {
+        for (Figure figure: myFigures) {
+            if(figure instanceof King) {
+                myKing = (King) figure;
+                break;
+            }
+        }
+    }
+
+    public List<Integer> getKingCoords(Board board) {
+        return board.getElementCoordinates(this.myKing);
+    }
 
     private boolean checkSelectedFigure() {
         return !(selectedFigure == null);
@@ -73,6 +89,41 @@ public class Player {
                  return false;
              }
          }
+    }
+
+    public boolean checkForCheck(List<Integer> figureCoordinates, Board board) {
+        List<List<Integer>> totalEnemyMoves = new ArrayList<>();
+        for(Figure enemyFigure : getEnemyFigures(board)) {
+            List<List<Integer>> moves = enemyFigure.calculatePossibleMoves(board.getElementCoordinates(enemyFigure), board);
+            totalEnemyMoves.addAll(moves);
+        }
+        if(findMatch(figureCoordinates, totalEnemyMoves)){
+            System.out.println("Поле бьётся");
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private boolean findMatch(List<Integer> kingCoords, List<List<Integer>> enemyFiguresMoves) {
+        for (List<Integer> move: enemyFiguresMoves) {
+            if(move.equals(kingCoords)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<Figure> getEnemyFigures(Board board){
+        String needColor;
+        if(this.myKing.color.equals("white")){
+            needColor = "black";
+        }
+        else {
+            needColor = "white";
+        }
+        return board.getFiguresByColor(needColor);
     }
 }
 

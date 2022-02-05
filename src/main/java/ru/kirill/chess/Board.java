@@ -1,6 +1,7 @@
 package ru.kirill.chess;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Board {
     private ArrayList<ArrayList<Figure>> fields = new ArrayList<>();
@@ -34,5 +35,17 @@ public class Board {
             }
         }
         return coords;
+    }
+
+    public List<Figure> getFiguresByColor(String color) {
+        List<Figure> figures = new ArrayList<>();
+        for (ArrayList<Figure> field : fields) {
+            for (Figure figure : field) {
+                if (figure != null && figure.color.equals(color)) {
+                    figures.add(figure);
+                }
+            }
+        }
+        return figures;
     }
 }

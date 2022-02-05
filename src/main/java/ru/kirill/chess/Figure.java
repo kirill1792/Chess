@@ -32,6 +32,7 @@ public abstract class Figure {
 
     public boolean canMove(List<Integer> coordinatesToMove, List<Integer> selfCoordinates, Board board) {
         List<List<Integer>> result = calculatePossibleMoves(selfCoordinates, board);
+        System.out.println(result);
         for (List<Integer> integers : result) {
             if (integers.equals(coordinatesToMove)) {
                 return true;
@@ -39,6 +40,11 @@ public abstract class Figure {
         }
         return false;
     }
+
+    //public boolean canMove(List<Integer> selfCoordinates, Board board) {
+        //List<List<Integer>> possibleMoves = calculatePossibleMoves(selfCoordinates, board);
+
+   // }
 
     public abstract  List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board);
 }

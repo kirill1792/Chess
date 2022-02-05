@@ -103,6 +103,8 @@ public class Game {
 
         whitePlayer.myFigures = whitePlayerFigures;
         blackPlayer.myFigures = blackPlayerFigures;
+        whitePlayer.setMyKing();
+        blackPlayer.setMyKing();
 
         System.out.println(board.getFields());
     }
@@ -114,6 +116,9 @@ public class Game {
           if (result) {
               changeTurn();
               System.out.println("Смена хода");
+              if(this.turn.checkForCheck(turn.getKingCoords(board), board)) {
+                  System.out.println("Объявлен шах королю игрока: " + turn.name);
+              }
           }
           App.redraw(gc, 1000, 1000, board.getFields());
           System.out.println(board.getFields());

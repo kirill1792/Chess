@@ -13,29 +13,38 @@ public class Knight extends Figure{
     @Override
     public List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board) {
         ArrayList<List<Integer>> possibleMoves = new ArrayList<>();
-        int startRow = figureCoordinates.get(0);
-        int startColumn = figureCoordinates.get(1);
-        int[] directions = {-2, 2, 2,-2};
-        int valueToBuff = startRow;
-        String dirToBuf = "column";
+        int startRow = figureCoordinates.get(0) - 2;
+        int startColumn = figureCoordinates.get(1) - 2;
+        int[] buffers = {1, 1,-1,-1};
+        boolean movePoint = false;
 
         for (int i = 0; i < 4; i++) {
-            valueToBuff += directions[i];
-            if(dirToBuf.equals("column")){
-                possibleMoves.add(Arrays.asList(valueToBuff, startColumn - 1));
-                possibleMoves.add(Arrays.asList(valueToBuff, startColumn + 1));
+            for (int j = 0; j < 4; j++) {
+                if(movePoint){
+                    if(startRow >= 0 & startRow <= 7 & startColumn >= 0 & startColumn <= 7){
+                        if(board.getFields().get(startRow).get(startColumn) != null) {
+                            if(!board.getFields().get(startRow).get(startColumn).color.equals(this.color)) {
+                                possibleMoves.add(Arrays.asList(startRow, startColumn));
+                            }
+                        }
+                        else {
+                            possibleMoves.add(Arrays.asList(startRow, startColumn));
+                        }
+                    }
+                    movePoint = false;
+                }
+                else {
+                    movePoint = true;
+                    }
 
-                dirToBuf = "row";
-                valueToBuff = startColumn;
+                if(i % 2 == 0) {
+                    startColumn += buffers[i];
+                   }
+                else {
+                    startRow += buffers[i];
+                    }
+                }
             }
-            else {
-                possibleMoves.add(Arrays.asList(startRow - 1, valueToBuff));
-                possibleMoves.add(Arrays.asList(startRow + 1, valueToBuff));
-
-                dirToBuf = "column";
-                valueToBuff = startRow;
-            }
-        }
         return possibleMoves;
+        }
     }
-}
