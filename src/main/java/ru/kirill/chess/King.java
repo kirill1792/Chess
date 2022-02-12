@@ -41,27 +41,6 @@ public class King extends Figure{
         System.out.println("Возможные ходы короля" + possibleMoves);
         return possibleMoves;
     }
-
-    public boolean canMove(List<Integer> coordinatesToMove, List<Integer> selfCoordinates, Board board) {
-        List<List<Integer>> result = calculatePossibleMoves(selfCoordinates, board);
-        System.out.println(result);
-        for (List<Integer> integers : result) {
-            if (integers.equals(coordinatesToMove)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-
-    public void validateMoves(List<List<Integer>> candidateMoves, Board board) {
-
-        for (List<Integer> move: candidateMoves) {
-
-        }
-    }
-
 }
 
 

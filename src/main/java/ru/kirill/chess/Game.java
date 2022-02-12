@@ -118,6 +118,14 @@ public class Game {
               System.out.println("Смена хода");
               if(this.turn.checkForCheck(turn.getKingCoords(board), board)) {
                   System.out.println("Объявлен шах королю игрока: " + turn.name);
+                  turn.myKing.isChecked = true;
+                  boolean result1 = turn.checkmate(board);
+                  if(result1){
+                      System.out.println("Мат!");
+                  }
+                  else {
+                      System.out.println("Мата нет");
+                  }
               }
           }
           App.redraw(gc, 1000, 1000, board.getFields());

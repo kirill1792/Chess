@@ -49,8 +49,8 @@ public class Player {
          }
          else if (board.getFields().get(row).get(column) == null) {
              if (checkSelectedFigure()) {
-                 ArrayList<Integer> coordinates = board.getElementCoordinates(selectedFigure);
-                 if (selectedFigure.canMove(Arrays.asList(row, column), coordinates, board)) {
+                 List<Integer> coordinates = board.getElementCoordinates(selectedFigure);
+                 if (canMove(Arrays.asList(row, column), board, selectedFigure)) {
                      System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
                      board.setCell(coordinates.get(0), coordinates.get(1), null);
                      board.setCell(row, column, selectedFigure);
@@ -71,7 +71,7 @@ public class Player {
              if (checkSelectedFigure()) {
                  System.out.println("Пробую побить фигуру");
                  ArrayList<Integer> coordinates = board.getElementCoordinates(selectedFigure);
-                 if (selectedFigure.canMove(Arrays.asList(row, column), coordinates, board)) {
+                 if (canMove(Arrays.asList(row, column), board, selectedFigure)) {
                      System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
                      board.setCell(coordinates.get(0), coordinates.get(1), null);
                      board.getFields().get(row).get(column).getMyImage().setVisible(false);
@@ -124,6 +124,42 @@ public class Player {
             needColor = "white";
         }
         return board.getFiguresByColor(needColor);
+    }
+
+    public boolean canMove(List<Integer> coordinatesToMove, Board board, Figure figure) {
+        List<Integer> selfCoordinates = board.getElementCoordinates(figure);
+        List<List<Integer>> result = figure.calculatePossibleMoves(selfCoordinates, board);
+        System.out.println(result);
+        for (List<Integer> integers : result) {
+            if (integers.equals(coordinatesToMove)) {
+                Board copyBoard = new Board();
+                copyBoard.setFields(board.getFields());
+                copyBoard.setCell(selfCoordinates.get(0), selfCoordinates.get(1), null);
+                copyBoard.setCell(coordinatesToMove.get(0), coordinatesToMove.get(1), selectedFigure);
+                if(checkForCheck(getKingCoords(copyBoard), copyBoard)){
+                    System.out.println("Тут будет шах!");
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkmate(Board board){
+        for (Figure myFigure: myFigures) {
+            for (List<Integer> coords: myFigure.calculatePossibleMoves(board.getElementCoordinates(myFigure), board)){
+                if (!(board.getFields().get(coords.get(0)).get(coords.get(1)) != null && board.getFields().get(coords.get(0)).get(coords.get(1)).color.equals(this.myKing.color))){
+                    boolean result = canMove(coords, board, myFigure);
+                    if (result){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
 

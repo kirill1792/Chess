@@ -17,6 +17,14 @@ public class Board {
         fields = arr;
     }
 
+    public void setFields(ArrayList<ArrayList<Figure>> fieldsToCopy) {
+        ArrayList<ArrayList<Figure>> arr = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            arr.add(new ArrayList<>(fieldsToCopy.get(i)));
+        }
+        fields = arr;
+    }
+
     public ArrayList<ArrayList<Figure>> getFields() {
         return fields;
     }
