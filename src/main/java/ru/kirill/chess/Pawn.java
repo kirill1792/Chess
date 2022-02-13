@@ -56,11 +56,15 @@ public class Pawn extends Figure{
     private ArrayList<List<Integer>> checkBeating(List<Integer> figureCoordinates, int buffer, Board board) {
         ArrayList<List<Integer>> possibleBeats = new ArrayList<>();
         if (figureCoordinates.get(1) - 1 >= 0 && board.getFields().get(figureCoordinates.get(0) + buffer).get(figureCoordinates.get(1) - 1) != null) {
+            if(!board.getFields().get(figureCoordinates.get(0) + buffer).get(figureCoordinates.get(1) - 1).color.equals(this.color)) {
                 possibleBeats.add(Arrays.asList(figureCoordinates.get(0) + buffer, figureCoordinates.get(1) - 1));
+            }
 
         }
         if (figureCoordinates.get(1) + 1 <= 7 && board.getFields().get(figureCoordinates.get(0) + buffer).get(figureCoordinates.get(1) + 1) != null) {
+            if (!board.getFields().get(figureCoordinates.get(0) + buffer).get(figureCoordinates.get(1) + 1).color.equals(this.color)) {
                 possibleBeats.add(Arrays.asList(figureCoordinates.get(0) + buffer, figureCoordinates.get(1) + 1));
+            }
         }
         System.out.println("Pawn beating" + possibleBeats);
         return possibleBeats;

@@ -135,7 +135,7 @@ public class Player {
                 Board copyBoard = new Board();
                 copyBoard.setFields(board.getFields());
                 copyBoard.setCell(selfCoordinates.get(0), selfCoordinates.get(1), null);
-                copyBoard.setCell(coordinatesToMove.get(0), coordinatesToMove.get(1), selectedFigure);
+                copyBoard.setCell(coordinatesToMove.get(0), coordinatesToMove.get(1), figure);
                 if(checkForCheck(getKingCoords(copyBoard), copyBoard)){
                     System.out.println("Тут будет шах!");
                     return false;
@@ -151,11 +151,9 @@ public class Player {
     public boolean checkmate(Board board){
         for (Figure myFigure: myFigures) {
             for (List<Integer> coords: myFigure.calculatePossibleMoves(board.getElementCoordinates(myFigure), board)){
-                if (!(board.getFields().get(coords.get(0)).get(coords.get(1)) != null && board.getFields().get(coords.get(0)).get(coords.get(1)).color.equals(this.myKing.color))){
-                    boolean result = canMove(coords, board, myFigure);
-                    if (result){
-                        return false;
-                    }
+                boolean result = canMove(coords, board, myFigure);
+                if (result){
+                    return false;
                 }
             }
         }

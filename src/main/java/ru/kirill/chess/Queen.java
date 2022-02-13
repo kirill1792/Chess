@@ -36,7 +36,10 @@ public class Queen extends Figure {
                     break;
                 }
                 else if (board.getFields().get(currentRow).get(currentColumn) != null) {
-                    possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                    Figure figure = board.getFields().get(currentRow).get(currentColumn);
+                    if (!figure.color.equals(this.color)) {
+                        possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                    }
                     break;
                 }
                 possibleMoves.add(Arrays.asList(currentRow, currentColumn));
@@ -68,7 +71,10 @@ public class Queen extends Figure {
                 }
 
                 if (board.getFields().get(currentRow).get(currentColumn) != null) {
-                    possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                    Figure figure = board.getFields().get(currentRow).get(currentColumn);
+                    if (!figure.color.equals(this.color)) {
+                        possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                    }
                     break;
                 }
                 possibleMoves.add(Arrays.asList(currentRow, currentColumn));
