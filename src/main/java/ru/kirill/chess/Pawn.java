@@ -37,7 +37,7 @@ public class Pawn extends Figure{
             }
             possibleMoves.addAll(checkBeating(figureCoordinates, 1, board));
         }
-        System.out.println("Pawn possible moves:" + possibleMoves);
+        //System.out.println("Pawn possible moves:" + possibleMoves);
         return possibleMoves;
     }
 
@@ -66,7 +66,7 @@ public class Pawn extends Figure{
                 possibleBeats.add(Arrays.asList(figureCoordinates.get(0) + buffer, figureCoordinates.get(1) + 1));
             }
         }
-        System.out.println("Pawn beating" + possibleBeats);
+        //System.out.println("Pawn beating" + possibleBeats);
         return possibleBeats;
     }
 }

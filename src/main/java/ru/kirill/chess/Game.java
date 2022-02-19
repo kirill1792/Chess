@@ -112,9 +112,12 @@ public class Game {
     public void processCoords(double x, double y) {
           int row = (int) Math.floor((y - 100) / 100);
           int column = (int) Math.floor((x - 100) / 100);
-          boolean result = turn.makeMove(row, column, board);
-          if (result) {
+          MoveResult result = turn.makeMove(row, column, board);
+          if (result.moved) {
               changeTurn();
+              if(result.beatenFigure != null){
+                  turn.myFigures.remove(result.beatenFigure);
+              }
               System.out.println("Смена хода");
               if(this.turn.checkForCheck(turn.getKingCoords(board), board)) {
                   System.out.println("Объявлен шах королю игрока: " + turn.name);
