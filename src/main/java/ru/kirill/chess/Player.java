@@ -41,11 +41,11 @@ public class Player {
         selectedFigure = figure;
     }
 
-    public boolean makeMove(int row, int column, Board board) {
+    public MoveResult makeMove(int row, int column, Board board) {
          if (myFigures.contains(board.getFields().get(row).get(column))) {
              setSelectedFigure(board.getFields().get(row).get(column));
              System.out.println("Установлена фигура");
-             return false;
+             return new MoveResult(false, null);
          }
          else if (board.getFields().get(row).get(column) == null) {
              if (checkSelectedFigure()) {
@@ -55,16 +55,16 @@ public class Player {
                      board.setCell(coordinates.get(0), coordinates.get(1), null);
                      board.setCell(row, column, selectedFigure);
                      selectedFigure = null;
-                     return true;
+                     return new MoveResult(true, null);
                  }
                  else {
                      System.out.println("Так нельзя ходить");
-                     return false;
+                     return new MoveResult(false, null);
                  }
              }
              else {
                  System.out.println("Нельзя походить: нет выбранной фигуры");
-                 return false;
+                 return new MoveResult(false, null);
              }
          }
          else {
@@ -73,20 +73,21 @@ public class Player {
                  ArrayList<Integer> coordinates = board.getElementCoordinates(selectedFigure);
                  if (canMove(Arrays.asList(row, column), board, selectedFigure)) {
                      System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
+                     Figure oldFig = board.getFields().get(row).get(column);
                      board.setCell(coordinates.get(0), coordinates.get(1), null);
                      board.getFields().get(row).get(column).getMyImage().setVisible(false);
                      board.setCell(row, column, selectedFigure);
                      selectedFigure = null;
-                     return true;
+                     return new MoveResult(true, oldFig);
                  }
                  else {
                      System.out.println("Так нельзя ходить");
-                     return false;
+                     return new MoveResult(false, null);
                  }
              }
              else {
                  System.out.println("Нельзя побить фигуру: нет выбранной фигуры");
-                 return false;
+                 return new MoveResult(false, null);
              }
          }
     }
