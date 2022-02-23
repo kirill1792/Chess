@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Pawn extends Figure{
-    private boolean isMoved = false;
 
     public Pawn(String color) throws FileNotFoundException {
         super(color);

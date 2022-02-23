@@ -9,22 +9,39 @@ public class Player {
     public ArrayList<Figure> myFigures = null;
     public King myKing;
     public String name;
+    public List<Integer> shortCastlingPoint;
+    public List<Integer> longCastlingPoint;
+    //public Rook shortCastlingRook;
+    //public Rook longCastlingRook;
 
     public Player(String name) {
         this.name = name;
     }
-
-
-    //public boolean isMyFigure(Figure figure) {
-        //return myFigures.contains(figure);
-   //}
-
 
     public void setMyKing() {
         for (Figure figure: myFigures) {
             if(figure instanceof King) {
                 myKing = (King) figure;
                 break;
+            }
+        }
+    }
+
+    public Figure getRook(List<Integer> castlingPoint, Board board){
+        if (this.myKing.color.equals("white")){
+            if(castlingPoint.equals(shortCastlingPoint)){
+                return board.getFields().get(7).get(7);
+            }
+            else {
+                return board.getFields().get(7).get(0);
+            }
+        }
+        else {
+            if(castlingPoint.equals(shortCastlingPoint)){
+                return board.getFields().get(0).get(7);
+            }
+            else {
+                return board.getFields().get(0).get(0);
             }
         }
     }
@@ -50,11 +67,34 @@ public class Player {
          else if (board.getFields().get(row).get(column) == null) {
              if (checkSelectedFigure()) {
                  List<Integer> coordinates = board.getElementCoordinates(selectedFigure);
+                 if(selectedFigure instanceof King && Arrays.asList(row, column).equals(shortCastlingPoint) | Arrays.asList(row, column).equals(longCastlingPoint)) {
+                     System.out.println("Пробуем сделать рокировку");
+                     List<Integer> castlingPoint;
+                     if(Arrays.asList(row, column).equals(shortCastlingPoint)){
+                         castlingPoint = shortCastlingPoint;
+                     }
+                     else {
+                         castlingPoint = longCastlingPoint;
+                     }
+                     Castling castling = new Castling(this, castlingPoint);
+                     boolean result = castling.castle(board);
+                     if(result){
+                         System.out.println("Рокируемся!");
+                         myKing.isMoved = true;
+                         return new MoveResult(true, null);
+                     }
+                     else {
+                         System.out.println("Рокировка невозможна");
+                         return new MoveResult(false, null);
+                     }
+                 }
                  if (canMove(Arrays.asList(row, column), board, selectedFigure)) {
                      System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
                      board.setCell(coordinates.get(0), coordinates.get(1), null);
                      board.setCell(row, column, selectedFigure);
+                     selectedFigure.isMoved = true;
                      selectedFigure = null;
+                     myKing.isChecked = false;
                      return new MoveResult(true, null);
                  }
                  else {
@@ -77,7 +117,9 @@ public class Player {
                      board.setCell(coordinates.get(0), coordinates.get(1), null);
                      board.getFields().get(row).get(column).getMyImage().setVisible(false);
                      board.setCell(row, column, selectedFigure);
+                     selectedFigure.isMoved = true;
                      selectedFigure = null;
+                     myKing.isChecked = false;
                      return new MoveResult(true, oldFig);
                  }
                  else {
@@ -160,6 +202,18 @@ public class Player {
         }
         return true;
     }
+
+//    public boolean canCastle(){
+//        if (this.myKing.isChecked || this.myKing.isMoved || ){
+//            System.out.println("Рокировка невозможна");
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//    private void checkRook(){
+//
+//    }
 }
 
 /*System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
@@ -168,3 +222,24 @@ public class Player {
         board.setCell(row, column, selectedFigure);
         selectedFigure = null;
         return true;*/
+
+//    List<Integer> castlingPoint;
+//    Figure rook;
+//                     if(Arrays.asList(row, column).equals(shortCastlingPoint)){
+//                             castlingPoint = shortCastlingPoint;
+//                             }
+//                             else {
+//                             castlingPoint = longCastlingPoint;
+//                             }
+//                             rook = getRook(castlingPoint, board);
+//                             if(!(rook instanceof Rook)){
+//                             return new MoveResult(false, null);
+//                             }
+//                             Castling castling = new Castling(this, (Rook) rook, castlingPoint);
+//                             boolean result = castling.castle(board);
+//                             if(result){
+//                             return new  MoveResult(true, null);
+//                             }
+//                             else {
+//                             return new MoveResult(false, null);
+//                             }

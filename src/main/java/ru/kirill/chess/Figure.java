@@ -5,10 +5,10 @@ import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Figure {
+    public boolean isMoved = false;
     private ImageView myImage;
     public String color;
 
@@ -29,13 +29,6 @@ public abstract class Figure {
     public ImageView getMyImage() {
         return myImage;
     }
-
-
-
-    //public boolean canMove(List<Integer> selfCoordinates, Board board) {
-        //List<List<Integer>> possibleMoves = calculatePossibleMoves(selfCoordinates, board);
-
-   // }
 
     public abstract  List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board);
 }

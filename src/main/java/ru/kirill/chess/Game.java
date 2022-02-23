@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Game {
     private Player turn = null;
@@ -26,6 +27,12 @@ public class Game {
         Player player2 = new Player("Петя");
         defineColor(player1, player2);
         turn = whitePlayer;
+        whitePlayer.shortCastlingPoint = new ArrayList<>(Arrays.asList(7, 6));
+        whitePlayer.longCastlingPoint = new ArrayList<>(Arrays.asList(7, 2));
+        blackPlayer.shortCastlingPoint = new ArrayList<>(Arrays.asList(0, 6));
+        blackPlayer.longCastlingPoint = new ArrayList<>(Arrays.asList(0, 2));
+        //whitePlayer.setCastlingRooks(board);
+        //blackPlayer.setCastlingRooks(board);
         createFigures();
         App.redraw(gc, 1000, 1000, board.getFields());
     }
@@ -135,5 +142,7 @@ public class Game {
           System.out.println(board.getFields());
           System.out.println("Перерисовка");
           System.out.println("Ходит:" + turn.name);
+          System.out.println(turn.shortCastlingPoint);
+          System.out.println(turn.longCastlingPoint);
     }
 }
