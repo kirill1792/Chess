@@ -23,8 +23,8 @@ public class King extends Figure{
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if(currentRow >= 0 & currentRow <= 7 & currentColumn >= 0 & currentColumn <= 7 && !asList(currentRow, currentColumn).equals(asList(row, column))){
-                        if(board.getFields().get(currentRow).get(currentColumn) != null) {
+                if(board.checkOutOfBounds(currentRow, currentColumn) && !asList(currentRow, currentColumn).equals(asList(row, column))){
+                        if(!board.isEmptyField(currentRow, currentColumn)) {
                             if(!board.getFields().get(currentRow).get(currentColumn).color.equals(this.color)) {
                                 possibleMoves.add(asList(currentRow, currentColumn));
                             }

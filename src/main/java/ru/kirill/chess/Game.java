@@ -1,12 +1,12 @@
 package ru.kirill.chess;
 
 import javafx.scene.Group;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Game {
     private Player turn = null;
@@ -29,11 +29,12 @@ public class Game {
         turn = whitePlayer;
         whitePlayer.shortCastlingPoint = new ArrayList<>(Arrays.asList(7, 6));
         whitePlayer.longCastlingPoint = new ArrayList<>(Arrays.asList(7, 2));
-        blackPlayer.shortCastlingPoint = new ArrayList<>(Arrays.asList(0, 6));
-        blackPlayer.longCastlingPoint = new ArrayList<>(Arrays.asList(0, 2));
+        blackPlayer.shortCastlingPoint = new ArrayList<>(Arrays.asList(7, 1));
+        blackPlayer.longCastlingPoint = new ArrayList<>(Arrays.asList(7, 5));
         //whitePlayer.setCastlingRooks(board);
         //blackPlayer.setCastlingRooks(board);
         createFigures();
+        //board.turnBoard();
         App.redraw(gc, 1000, 1000, board.getFields());
     }
 
@@ -86,7 +87,7 @@ public class Game {
 
         for (int i = 0; i < board.getFields().size(); i++) {
             Figure currentFig = blackFigures[i];
-            Pawn blackPawn = new Pawn("black");
+            Pawn blackPawn = new Pawn("black", 1);
             board.setCell(row, column, currentFig);
             root.getChildren().add(currentFig.getMyImage());
 
@@ -96,10 +97,9 @@ public class Game {
             blackPlayerFigures.add(blackPawn);
 
             Figure currentFigOpposite = whiteFigures[i];
-            Pawn whitePawn = new Pawn("white");
+            Pawn whitePawn = new Pawn("white", -1);
             board.setCell(row + 7, column, currentFigOpposite);
             root.getChildren().add(currentFigOpposite.getMyImage());
-
             board.setCell(row + 6, column, whitePawn);
             root.getChildren().add(whitePawn.getMyImage());
             whitePlayerFigures.add(currentFigOpposite);
@@ -113,6 +113,7 @@ public class Game {
         whitePlayer.setMyKing();
         blackPlayer.setMyKing();
 
+
         System.out.println(board.getFields());
     }
 
@@ -121,7 +122,10 @@ public class Game {
           int column = (int) Math.floor((x - 100) / 100);
           MoveResult result = turn.makeMove(row, column, board);
           if (result.moved) {
+              board.turnBoard();
+              changePawnDirection(turn.myFigures);
               changeTurn();
+              changePawnDirection(turn.myFigures);
               if(result.beatenFigure != null){
                   turn.myFigures.remove(result.beatenFigure);
               }
@@ -139,10 +143,20 @@ public class Game {
               }
           }
           App.redraw(gc, 1000, 1000, board.getFields());
-          System.out.println(board.getFields());
+          for (ArrayList<Figure> element: board.getFields()){
+              System.out.println(element);
+          }
           System.out.println("Перерисовка");
           System.out.println("Ходит:" + turn.name);
           System.out.println(turn.shortCastlingPoint);
           System.out.println(turn.longCastlingPoint);
+    }
+
+    private void changePawnDirection(List<Figure> figures){
+        for (Figure figure: figures) {
+            if (figure instanceof Pawn pawn){
+                pawn.changeDirection();
+            }
+        }
     }
 }

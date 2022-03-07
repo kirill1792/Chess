@@ -25,10 +25,10 @@ public class Bishop extends Figure{
             int currentRow = startRow + rowBuff;
             int currentColumn = startColumn + columnBuff;
             for (int j = 0; j < 8; j++) {
-                if (currentRow > 7 | currentRow < 0 | currentColumn > 7 | currentColumn < 0) {
+                if (!board.checkOutOfBounds(currentRow, currentColumn)) {
                     break;
                 }
-                else if (board.getFields().get(currentRow).get(currentColumn) != null) {
+                else if (!board.isEmptyField(currentRow, currentColumn)) {
                     Figure figure = board.getFields().get(currentRow).get(currentColumn);
                     if (!figure.color.equals(this.color)) {
                         possibleMoves.add(Arrays.asList(currentRow, currentColumn));

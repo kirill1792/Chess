@@ -1,6 +1,7 @@
 package ru.kirill.chess;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Board {
@@ -55,5 +56,23 @@ public class Board {
             }
         }
         return figures;
+    }
+
+    public boolean isEmptyField(int row, int column) {
+        return getFields().get(row).get(column) == null;
+    }
+
+    public boolean checkOutOfBounds(int row, int column) {
+        return row >= 0 && row <= 7 && column >= 0 && column <= 7;
+    }
+
+    public void turnBoard(){
+        ArrayList<ArrayList<Figure>> newFields = new ArrayList<>();
+        for (int i = fields.size() - 1; i > -1 ; i--) {
+            ArrayList<Figure> res = fields.get(i);
+            Collections.reverse(res);
+            newFields.add(res);
+        }
+        fields = newFields;
     }
 }

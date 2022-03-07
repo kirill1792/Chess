@@ -21,9 +21,8 @@ public class Knight extends Figure{
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 if(movePoint){
-                    if(startRow >= 0 & startRow <= 7 & startColumn >= 0 & startColumn <= 7){
-
-                        if(board.getFields().get(startRow).get(startColumn) != null) {
+                    if(board.checkOutOfBounds(startRow, startColumn)){
+                        if(!board.isEmptyField(startRow, startColumn)) {
                             if(!board.getFields().get(startRow).get(startColumn).color.equals(this.color)) {
                                 possibleMoves.add(Arrays.asList(startRow, startColumn));
                             }
