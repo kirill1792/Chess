@@ -6,7 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Pawn extends Figure {
-    private int direction;
+    public int direction;
+    private Figure chosenFigure;
+    public int prevRow;
+    public int prevColumn;
 
     public Pawn(String color, int direction) throws FileNotFoundException {
         super(color);
@@ -42,5 +45,13 @@ public class Pawn extends Figure {
 
     private boolean checkBeat(int row, int column, Board board) {
         return board.checkOutOfBounds(row, column) && !board.isEmptyField(row, column) && !board.getFields().get(row).get(column).color.equals(this.color);
+    }
+
+    public Figure getChosenFigure() {
+        return chosenFigure;
+    }
+
+    public void setChosenFigure(Figure chosenFigure) {
+        this.chosenFigure = chosenFigure;
     }
 }

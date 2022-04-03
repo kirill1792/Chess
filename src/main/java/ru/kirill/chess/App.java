@@ -10,6 +10,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -17,7 +19,7 @@ public class App extends Application{
     @Override
     public void start(Stage stage) throws IOException {
         Group root = new Group();
-        Canvas canvas = new Canvas(1000, 1000);
+        Canvas canvas = new Canvas(1500, 1000);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         stage.setTitle("Chess");
         root.getChildren().add(canvas);
@@ -31,7 +33,11 @@ public class App extends Application{
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getX() >= 100 & mouseEvent.getX() <= 900 & mouseEvent.getY() >= 100 & mouseEvent.getY() <= 900) {
                     System.out.println("Нажали на доску");
-                    game.processCoords(mouseEvent.getX(), mouseEvent.getY());
+                    try {
+                        game.processCoords(mouseEvent.getX(), mouseEvent.getY());
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -74,7 +80,9 @@ public class App extends Application{
         }
         gc.strokeRect(100, 100, 800,800);
     }
-
+    private static void drawNotationPlace(GraphicsContext gc){
+        gc.strokeRect(1000, 100, 400, 800);
+    }
     private static void drawSymbols(GraphicsContext gc){
         String numbers = "87654321";
         String letters = "abcdefgh";
@@ -99,11 +107,13 @@ public class App extends Application{
             lettersX += 100;
         }
     }
+
     public static void redraw(GraphicsContext gc, double cvsWidth, double cvsHeight, ArrayList<ArrayList<Figure>> fields) {
         gc.clearRect(0, 0, cvsWidth, cvsHeight);
         drawBord(gc);
         drawSymbols(gc);
         drawFigures(fields);
+        drawNotationPlace(gc);
     }
 
     private static void drawFigures(ArrayList<ArrayList<Figure>> fields){
@@ -122,5 +132,4 @@ public class App extends Application{
             }
         }
     }
-    public void makeSelection(){}
 }

@@ -84,12 +84,10 @@ public class Player {
                 if (canMove(Arrays.asList(row, column), board, selectedFigure)) {
                     System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
                     board.setCell(coordinates.get(0), coordinates.get(1), null);
-                    if (checkForPawn(selectedFigure, row)){
-                        myFigures.remove(selectedFigure);
-                        board.setCell(row, column, null);
-                    }
-                    else {
-                        board.setCell(row, column, selectedFigure);
+                    board.setCell(row, column, selectedFigure);
+                    if(selectedFigure instanceof Pawn pawn){
+                        pawn.prevRow = coordinates.get(0);
+                        pawn.prevColumn = coordinates.get(1);
                     }
                     selectedFigure.isMoved = true;
                     selectedFigure = null;
@@ -111,8 +109,11 @@ public class Player {
                     System.out.println("Выполняю ход фигурой: " + selectedFigure + " " + "На поле:" + row + " " + column);
                     Figure oldFig = board.getFields().get(row).get(column);
                     board.setCell(coordinates.get(0), coordinates.get(1), null);
-                    board.getFields().get(row).get(column).getMyImage().setVisible(false);
                     board.setCell(row, column, selectedFigure);
+                    if(selectedFigure instanceof Pawn pawn){
+                        pawn.prevRow = coordinates.get(0);
+                        pawn.prevColumn = coordinates.get(1);
+                    }
                     selectedFigure.isMoved = true;
                     selectedFigure = null;
                     myKing.isChecked = false;
@@ -194,7 +195,7 @@ public class Player {
         return true;
     }
 
-    private boolean checkForPawn(Figure selectedFigure, int newRow) {
-        return selectedFigure instanceof Pawn && newRow == 0;
-    }
+    //private boolean checkForPawn(Figure selectedFigure, int newRow) {
+        //return selectedFigure instanceof Pawn && newRow == 0;
+    //}
 }

@@ -31,4 +31,12 @@ public abstract class Figure {
     }
 
     public abstract  List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board);
+
+    @Override
+    public String toString() {
+        return  getClass().getSimpleName() + "{" +
+                "isMoved=" + isMoved +
+                ", color='" + color + '\'' +
+                '}';
+    }
 }
