@@ -1,28 +1,36 @@
 package ru.kirill.chess;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class App extends Application{
     @Override
     public void start(Stage stage) throws IOException {
         Group root = new Group();
         Canvas canvas = new Canvas(1500, 1000);
+        Button turnBoardButton = new Button("Повернуть доску");
+        turnBoardButton.setLayoutX(500);
+        turnBoardButton.setLayoutY(25);
+        root.getChildren().add(canvas);
+        root.getChildren().add(turnBoardButton);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         stage.setTitle("Chess");
-        root.getChildren().add(canvas);
         Game game = new Game(root, gc);
         game.setUpGame();
         //redraw(gc, canvas.getWidth(), canvas.getHeight(), game.board.getFields());
@@ -39,6 +47,14 @@ public class App extends Application{
                         e.printStackTrace();
                     }
                 }
+            }
+        });
+        turnBoardButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Hello World!");
+                game.turnMyBoard();
+                redraw(gc, 1000, 1000, game.board.getFields(), game.notation.getBoardNums(), game.notation.getBoardLetters(), game.notation.getExpressions());
             }
         });
         stage.show();
@@ -80,13 +96,7 @@ public class App extends Application{
         }
         gc.strokeRect(100, 100, 800,800);
     }
-    private static void drawNotationPlace(GraphicsContext gc){
-        gc.strokeRect(1000, 100, 400, 800);
-    }
-    private static void drawSymbols(GraphicsContext gc){
-        String numbers = "87654321";
-        String letters = "abcdefgh";
-
+    private static void drawSymbols(GraphicsContext gc, String numbers, String letters){
         int numsX = 75;
         int numsY = 150;
 
@@ -108,12 +118,12 @@ public class App extends Application{
         }
     }
 
-    public static void redraw(GraphicsContext gc, double cvsWidth, double cvsHeight, ArrayList<ArrayList<Figure>> fields) {
+    public static void redraw(GraphicsContext gc, double cvsWidth, double cvsHeight, ArrayList<ArrayList<Figure>> fields, String numbers, String letters, List<String> expressions) {
         gc.clearRect(0, 0, cvsWidth, cvsHeight);
         drawBord(gc);
-        drawSymbols(gc);
+        drawSymbols(gc, numbers, letters);
         drawFigures(fields);
-        drawNotationPlace(gc);
+        drawNotation(expressions, gc);
     }
 
     private static void drawFigures(ArrayList<ArrayList<Figure>> fields){
@@ -130,6 +140,28 @@ public class App extends Application{
                     figure.getMyImage().setVisible(true);
                 }
             }
+        }
+    }
+
+    private static void drawNotation(List<String> expressions, GraphicsContext gc){
+        gc.strokeRect(1000, 100, 400, 800);
+        int startX = 1050;
+        int currentX = startX;
+        int currentY = 125;
+        int count = 1;
+        for (int i = 0; i < expressions.size(); i++) {
+            String expression = expressions.get(i);
+            if(i % 2 == 0){
+                expression = count + "." + expression;
+                currentY += 50;
+                currentX = startX;
+                count++;
+            }
+            else {
+                currentX += 100;
+            }
+            gc.fillText(expression, currentX, currentY);
+            System.out.println(expression);
         }
     }
 }

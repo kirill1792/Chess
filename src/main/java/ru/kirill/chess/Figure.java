@@ -30,7 +30,7 @@ public abstract class Figure {
         return myImage;
     }
 
-    public abstract  List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board);
+    public abstract List<Coordinates> calculatePossibleMoves(Coordinates figureCoordinates, Board board);
 
     @Override
     public String toString() {

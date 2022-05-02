@@ -17,6 +17,19 @@ public class Game {
     private Player whitePlayer;
     private Player blackPlayer;
     public Notation notation;
+//    public static List<String> testArr = new ArrayList<>();
+//    static {
+//        testArr.add("e4");
+//        testArr.add("e5");
+//        testArr.add("Nf3");
+//        testArr.add("Nc6");
+//        testArr.add("d4");
+//        testArr.add("exd4");
+//        testArr.add("Nxd4");
+//        testArr.add("Nf6");
+//        testArr.add("Nxc6");
+//        testArr.add("bxc6");
+//    }
 
     public Game(Group root, GraphicsContext gc) {
         this.root = root;
@@ -31,15 +44,12 @@ public class Game {
         Player player2 = new Player("Петя");
         defineColor(player1, player2);
         turn = whitePlayer;
-        whitePlayer.shortCastlingPoint = new ArrayList<>(Arrays.asList(7, 6));
-        whitePlayer.longCastlingPoint = new ArrayList<>(Arrays.asList(7, 2));
-        blackPlayer.shortCastlingPoint = new ArrayList<>(Arrays.asList(7, 1));
-        blackPlayer.longCastlingPoint = new ArrayList<>(Arrays.asList(7, 5));
-        //whitePlayer.setCastlingRooks(board);
-        //blackPlayer.setCastlingRooks(board);
         createFigures();
-        //board.turnBoard();
-        App.redraw(gc, 1000, 1000, board.getFields());
+        whitePlayer.shortCastingRook = (Rook) board.getFields().get(7).get(7);
+        whitePlayer.longCastlingRook = (Rook) board.getFields().get(7).get(0);
+        blackPlayer.shortCastingRook = (Rook) board.getFields().get(0).get(7);
+        blackPlayer.longCastlingRook = (Rook) board.getFields().get(0).get(0);
+        App.redraw(gc, 1000, 1000, board.getFields(), notation.getBoardNums(), notation.getBoardLetters(), notation.getExpressions());
     }
 
     private void defineColor(Player player1, Player player2) {
@@ -122,21 +132,21 @@ public class Game {
     public void processCoords(double x, double y) throws FileNotFoundException {
         int row = (int) Math.floor((y - 100) / 100);
         int column = (int) Math.floor((x - 100) / 100);
-        MoveResult result = turn.makeMove(row, column, board);
-        if (result.moved) {
-            if(!transformPawn()){
-                return;
+        MoveResult result = turn.makeMove(row, column, board, notation.getBoardNums(), notation.getBoardLetters());
+        if (result.movedFig != null) {
+            String checkmateMarker = "";
+            String figureBeaten = "";
+            if(result.newFigure != null){
+                root.getChildren().add(result.newFigure.getMyImage());
             }
+            //if (result.beatenFigure != null) {
+               // result.beatenFigure.getMyImage().setVisible(false);
+           // }
+            changeTurn();
             if (result.beatenFigure != null) {
                 result.beatenFigure.getMyImage().setVisible(false);
-            }
-            board.turnBoard();
-            notation.reverseNotations();
-            changePawnDirection(turn.myFigures);
-            changeTurn();
-            changePawnDirection(turn.myFigures);
-            if (result.beatenFigure != null) {
                 turn.myFigures.remove(result.beatenFigure);
+                figureBeaten = "x";
             }
             System.out.println("Смена хода");
             if (turn.checkForCheck(turn.getKingCoords(board), board)) {
@@ -145,8 +155,10 @@ public class Game {
                 boolean result1 = turn.checkmate(board);
                 if (result1) {
                     System.out.println("Мат!");
+                    checkmateMarker = "#";
                 } else {
                     System.out.println("Мата нет");
+                    checkmateMarker = "+";
                 }
             } else {
                 boolean result1 = turn.checkmate(board);
@@ -156,66 +168,79 @@ public class Game {
                     System.out.println("Пата нет");
                 }
             }
+            if(result.castlingType != null){
+                notation.createExpression(result.castlingType, checkmateMarker);
+            }
+            else {
+                System.out.println(result.movedFig.getClass().getSimpleName());
+                notation.createExpression(row, column, figureBeaten, result.movedFig.getClass().getSimpleName(), checkmateMarker, result.newFigure, result.correctiveFactor);
+            }
         }
-        App.redraw(gc, 1000, 1000, board.getFields());
+        App.redraw(gc, 1000, 1000, board.getFields(), notation.getBoardNums(), notation.getBoardLetters(), notation.getExpressions());
         for (ArrayList<Figure> element : board.getFields()) {
             System.out.println(element);
         }
         System.out.println("Перерисовка");
         System.out.println("Ходит:" + turn.name);
-        System.out.println(turn.shortCastlingPoint);
-        System.out.println(turn.longCastlingPoint);
     }
 
     private void changePawnDirection(List<Figure> figures) {
         for (Figure figure : figures) {
-            if (figure instanceof Pawn pawn) {
-                pawn.changeDirection();
+            if (figure instanceof Pawn) {
+                ((Pawn) figure).changeDirection();
             }
         }
     }
-
-    private boolean transformPawn() throws FileNotFoundException {
-        for (Figure figure : board.getFields().get(0)) {
-            if (figure instanceof Pawn pawn) {
-                List<Integer> coords = board.getElementCoordinates(pawn);
-                ChooseNewFigure.newWindow(figure.color, new FigureChoiceCallbackImpl(pawn));
-                Figure chosenFigure = pawn.getChosenFigure();
-                if (chosenFigure != null) {
-                    turn.myFigures.remove(pawn);
-                    pawn.getMyImage().setVisible(false);
-                    turn.myFigures.add(chosenFigure);
-                    board.setCell(coords.get(0), coords.get(1), chosenFigure);
-                    return true;
-                }
-                else {
-                    board.setCell(coords.get(0), coords.get(1), null);
-                    board.setCell(pawn.prevRow, pawn.prevColumn, pawn);
-                    return false;
-                }
-            }
-        }
-        return true;
+    public void turnMyBoard(){
+        board.turnBoard();
+        changePawnDirection(whitePlayer.myFigures);
+        changePawnDirection(blackPlayer.myFigures);
+        notation.reverseNotations();
+        whitePlayer.reverseBoost();
+        blackPlayer.reverseBoost();
     }
 
-    private class FigureChoiceCallbackImpl implements FigureChoiceCallback {
-        private final Pawn pawn;
+//    private boolean transformPawn() throws FileNotFoundException {
+//        for (Figure figure : board.getFields().get(0)) {
+//            if (figure instanceof Pawn pawn) {
+//                Coordinates coords = board.getElementCoordinates(pawn);
+//                ChooseNewFigure.newWindow(figure.color, new FigureChoiceCallbackImpl(pawn));
+//                Figure chosenFigure = pawn.getChosenFigure();
+//                if (chosenFigure != null) {
+//                    turn.myFigures.remove(pawn);
+//                    pawn.getMyImage().setVisible(false);
+//                    turn.myFigures.add(chosenFigure);
+//                    board.setCell(coords.getRow(), coords.getColumn(), chosenFigure);
+//                    return true;
+//                }
+//                else {
+//                    board.setCell(coords.getRow(), coords.getColumn(), null);
+//                    board.setCell(pawn.prevRow, pawn.prevColumn, pawn);
+//                    return false;
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
-        public FigureChoiceCallbackImpl(Pawn pawn) {
-            this.pawn = pawn;
-        }
-
-        @Override
-        public void receiveChosenFigure(Class<? extends Figure> figureType, String color) {
-            try {
-                Figure figure = figureType.getDeclaredConstructor(String.class).newInstance(color);
-                root.getChildren().add(figure.getMyImage());
-                // установка параметров выбранной фигуры
-                System.out.println("Chosen figure: " + figure);
-                pawn.setChosenFigure(figure);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    private class FigureChoiceCallbackImpl implements FigureChoiceCallback {
+//        private final Pawn pawn;
+//
+//        public FigureChoiceCallbackImpl(Pawn pawn) {
+//            this.pawn = pawn;
+//        }
+//
+//        @Override
+//        public void receiveChosenFigure(Class<? extends Figure> figureType, String color) {
+//            try {
+//                Figure figure = figureType.getDeclaredConstructor(String.class).newInstance(color);
+//                root.getChildren().add(figure.getMyImage());
+//                // установка параметров выбранной фигуры
+//                System.out.println("Chosen figure: " + figure);
+//                pawn.setChosenFigure(figure);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }

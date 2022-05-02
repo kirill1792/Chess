@@ -34,16 +34,17 @@ public class Board {
         fields.get(row).set(column, figure);
     }
 
-    public ArrayList<Integer> getElementCoordinates(Figure figure) {
-        ArrayList<Integer> coords = new ArrayList<>();
+    public Coordinates getElementCoordinates(Figure figure) {
+        int figureRow = -1;
+        int figureColumn = -1;
 
         for (int i = 0; i < fields.size(); i++) {
             if(fields.get(i).contains(figure)) {
-                coords.add(i);
-                coords.add(fields.get(i).indexOf(figure));
+                figureRow = i;
+                figureColumn = fields.get(i).indexOf(figure);
             }
         }
-        return coords;
+        return new Coordinates(figureRow, figureColumn);
     }
 
     public List<Figure> getFiguresByColor(String color) {

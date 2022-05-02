@@ -13,17 +13,17 @@ public class Queen extends Figure {
     }
 
     @Override
-    public List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board) {
-        List<List<Integer>> diagonalMoves = calculateDiagonalMoves(figureCoordinates, board);
-        List<List<Integer>> straightMoves = calculateStraightMoves(figureCoordinates, board);
+    public List<Coordinates> calculatePossibleMoves(Coordinates figureCoordinates, Board board) {
+        List<Coordinates> diagonalMoves = calculateDiagonalMoves(figureCoordinates, board);
+        List<Coordinates> straightMoves = calculateStraightMoves(figureCoordinates, board);
         diagonalMoves.addAll(straightMoves);
         return diagonalMoves;
     }
 
-    private List<List<Integer>> calculateDiagonalMoves(List<Integer> figureCoordinates, Board board){
-        ArrayList<List<Integer>> possibleMoves = new ArrayList<>();
-        int startRow = figureCoordinates.get(0);
-        int startColumn = figureCoordinates.get(1);
+    private List<Coordinates> calculateDiagonalMoves(Coordinates figureCoordinates, Board board){
+        ArrayList<Coordinates> possibleMoves = new ArrayList<>();
+        int startRow = figureCoordinates.getRow();
+        int startColumn = figureCoordinates.getColumn();
         int[][] directions = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}};
 
         for (int i = 0; i < 4; i++) {
@@ -38,11 +38,11 @@ public class Queen extends Figure {
                 else if (!board.isEmptyField(currentRow, currentColumn)) {
                     Figure figure = board.getFields().get(currentRow).get(currentColumn);
                     if (!figure.color.equals(this.color)) {
-                        possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                        possibleMoves.add(new Coordinates(currentRow, currentColumn));
                     }
                     break;
                 }
-                possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                possibleMoves.add(new Coordinates(currentRow, currentColumn));
                 currentRow += rowBuff;
                 currentColumn += columnBuff;
             }
@@ -50,10 +50,10 @@ public class Queen extends Figure {
         return possibleMoves;
     }
 
-    private List<List<Integer>> calculateStraightMoves(List<Integer> figureCoordinates, Board board) {
-        ArrayList<List<Integer>> possibleMoves = new ArrayList<>();
-        int startRow = figureCoordinates.get(0);
-        int startColumn = figureCoordinates.get(1);
+    private List<Coordinates> calculateStraightMoves(Coordinates figureCoordinates, Board board) {
+        ArrayList<Coordinates> possibleMoves = new ArrayList<>();
+        int startRow = figureCoordinates.getRow();
+        int startColumn = figureCoordinates.getColumn();
         int[] iterations = {startRow, 7 - startColumn, 7 - startRow, startColumn};
         int[] dirBuffs = {-1, 1, 1,-1};
         String currentDir = "row";
@@ -73,11 +73,11 @@ public class Queen extends Figure {
                 if (!board.isEmptyField(currentRow, currentColumn)) {
                     Figure figure = board.getFields().get(currentRow).get(currentColumn);
                     if (!figure.color.equals(this.color)) {
-                        possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                        possibleMoves.add(new Coordinates(currentRow, currentColumn));
                     }
                     break;
                 }
-                possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                possibleMoves.add(new Coordinates(currentRow, currentColumn));
             }
             if(currentDir.equals("row")) {
                 currentDir = "column";

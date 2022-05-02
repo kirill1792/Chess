@@ -11,10 +11,10 @@ public class Rook extends Figure{
     }
 
     @Override
-    public List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board) {
-        ArrayList<List<Integer>> possibleMoves = new ArrayList<>();
-        int startRow = figureCoordinates.get(0);
-        int startColumn = figureCoordinates.get(1);
+    public List<Coordinates> calculatePossibleMoves(Coordinates figureCoordinates, Board board) {
+        ArrayList<Coordinates> possibleMoves = new ArrayList<>();
+        int startRow = figureCoordinates.getRow();
+        int startColumn = figureCoordinates.getColumn();
         int[] iterations = {startRow, 7 - startColumn, 7 - startRow, startColumn};
         int[] dirBuffs = {-1, 1, 1,-1};
         String currentDir = "row";
@@ -34,11 +34,11 @@ public class Rook extends Figure{
                 if (board.getFields().get(currentRow).get(currentColumn) != null) {
                     Figure figure = board.getFields().get(currentRow).get(currentColumn);
                     if (!figure.color.equals(this.color)) {
-                        possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                        possibleMoves.add(new Coordinates(currentRow, currentColumn));
                     }
                     break;
                 }
-                possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                possibleMoves.add(new Coordinates(currentRow, currentColumn));
             }
             if(currentDir.equals("row")) {
                 currentDir = "column";

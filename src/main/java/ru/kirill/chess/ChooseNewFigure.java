@@ -1,30 +1,30 @@
 package ru.kirill.chess;
 
+import eu.hansolo.tilesfx.tools.Point;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.stage.Modality;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ChooseNewFigure {
 
-    public static void newWindow(String figColor, FigureChoiceCallback callback) throws FileNotFoundException {
+    public static Class<? extends Figure> newWindow(String figColor) throws FileNotFoundException {
+        AtomicReference<Class<? extends Figure>> figureType = new AtomicReference<>();
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
                 ImageView imageView = (ImageView) e.getSource();
-               // imageView.setVisible(false);
-                callback.receiveChosenFigure((Class<? extends Figure>) imageView.getUserData(), figColor);
+                figureType.set((Class<? extends Figure>) imageView.getUserData());
                 window.close();
             }
         };
@@ -35,7 +35,7 @@ public class ChooseNewFigure {
         window.setScene(scene);
         window.setTitle("Выберите фигуру");
         window.showAndWait();
-        // window.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
+        return figureType.get();
     }
 
     private static void setImages(String color, Pane pane, EventHandler<MouseEvent> eventHandler) throws FileNotFoundException {

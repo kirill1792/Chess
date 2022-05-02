@@ -14,10 +14,10 @@ public class King extends Figure{
     }
 
     @Override
-    public List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board) {
-        ArrayList<List<Integer>> possibleMoves = new ArrayList<>();
-        int row = figureCoordinates.get(0);
-        int column = figureCoordinates.get(1);
+    public List<Coordinates> calculatePossibleMoves(Coordinates figureCoordinates, Board board) {
+        ArrayList<Coordinates> possibleMoves = new ArrayList<>();
+        int row = figureCoordinates.getRow();
+        int column = figureCoordinates.getColumn();
         int currentRow = row - 1;
         int currentColumn = column - 1;
 
@@ -26,11 +26,11 @@ public class King extends Figure{
                 if(board.checkOutOfBounds(currentRow, currentColumn) && !asList(currentRow, currentColumn).equals(asList(row, column))){
                         if(!board.isEmptyField(currentRow, currentColumn)) {
                             if(!board.getFields().get(currentRow).get(currentColumn).color.equals(this.color)) {
-                                possibleMoves.add(asList(currentRow, currentColumn));
+                                possibleMoves.add(new Coordinates(currentRow, currentColumn));
                             }
                         }
                         else {
-                            possibleMoves.add(asList(currentRow, currentColumn));
+                            possibleMoves.add(new Coordinates(currentRow, currentColumn));
                         }
                 }
                 currentRow++;

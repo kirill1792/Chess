@@ -11,10 +11,10 @@ public class Knight extends Figure{
     }
 
     @Override
-    public List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board) {
-        ArrayList<List<Integer>> possibleMoves = new ArrayList<>();
-        int startRow = figureCoordinates.get(0) - 2;
-        int startColumn = figureCoordinates.get(1) - 2;
+    public List<Coordinates> calculatePossibleMoves(Coordinates figureCoordinates, Board board) {
+        ArrayList<Coordinates> possibleMoves = new ArrayList<>();
+        int startRow = figureCoordinates.getRow() - 2;
+        int startColumn = figureCoordinates.getColumn() - 2;
         int[] buffers = {1, 1,-1,-1};
         boolean movePoint = false;
 
@@ -24,11 +24,11 @@ public class Knight extends Figure{
                     if(board.checkOutOfBounds(startRow, startColumn)){
                         if(!board.isEmptyField(startRow, startColumn)) {
                             if(!board.getFields().get(startRow).get(startColumn).color.equals(this.color)) {
-                                possibleMoves.add(Arrays.asList(startRow, startColumn));
+                                possibleMoves.add(new Coordinates(startRow, startColumn));
                             }
                         }
                         else {
-                            possibleMoves.add(Arrays.asList(startRow, startColumn));
+                            possibleMoves.add(new Coordinates(startRow, startColumn));
                         }
                     }
                     movePoint = false;

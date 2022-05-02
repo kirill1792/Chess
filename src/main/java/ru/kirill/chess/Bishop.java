@@ -13,10 +13,10 @@ public class Bishop extends Figure{
     }
 
     @Override
-    public List<List<Integer>> calculatePossibleMoves(List<Integer> figureCoordinates, Board board) {
-        ArrayList<List<Integer>> possibleMoves = new ArrayList<>();
-        int startRow = figureCoordinates.get(0);
-        int startColumn = figureCoordinates.get(1);
+    public List<Coordinates> calculatePossibleMoves(Coordinates figureCoordinates, Board board) {
+        ArrayList<Coordinates> possibleMoves = new ArrayList<>();
+        int startRow = figureCoordinates.getRow();
+        int startColumn = figureCoordinates.getColumn();
         int[][] directions = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}};
 
         for (int i = 0; i < 4; i++) {
@@ -31,11 +31,11 @@ public class Bishop extends Figure{
                 else if (!board.isEmptyField(currentRow, currentColumn)) {
                     Figure figure = board.getFields().get(currentRow).get(currentColumn);
                     if (!figure.color.equals(this.color)) {
-                        possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                        possibleMoves.add(new Coordinates(currentRow, currentColumn));
                     }
                     break;
                 }
-                possibleMoves.add(Arrays.asList(currentRow, currentColumn));
+                possibleMoves.add(new Coordinates(currentRow, currentColumn));
                 currentRow += rowBuff;
                 currentColumn += columnBuff;
             }
