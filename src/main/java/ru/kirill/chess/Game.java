@@ -2,6 +2,9 @@ package ru.kirill.chess;
 
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.text.Text;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
@@ -17,23 +20,12 @@ public class Game {
     private Player whitePlayer;
     private Player blackPlayer;
     public Notation notation;
-//    public static List<String> testArr = new ArrayList<>();
-//    static {
-//        testArr.add("e4");
-//        testArr.add("e5");
-//        testArr.add("Nf3");
-//        testArr.add("Nc6");
-//        testArr.add("d4");
-//        testArr.add("exd4");
-//        testArr.add("Nxd4");
-//        testArr.add("Nf6");
-//        testArr.add("Nxc6");
-//        testArr.add("bxc6");
-//    }
+    private TextArea textArea;
 
-    public Game(Group root, GraphicsContext gc) {
+    public Game(Group root, GraphicsContext gc, TextArea textArea) {
         this.root = root;
         this.gc = gc;
+        this.textArea = textArea;
     }
 
     public void setUpGame() throws FileNotFoundException {
@@ -49,7 +41,7 @@ public class Game {
         whitePlayer.longCastlingRook = (Rook) board.getFields().get(7).get(0);
         blackPlayer.shortCastingRook = (Rook) board.getFields().get(0).get(7);
         blackPlayer.longCastlingRook = (Rook) board.getFields().get(0).get(0);
-        App.redraw(gc, 1000, 1000, board.getFields(), notation.getBoardNums(), notation.getBoardLetters(), notation.getExpressions());
+        App.redraw(gc, 1000, 1000, board.getFields(), notation.getBoardNums(), notation.getBoardLetters());
     }
 
     private void defineColor(Player player1, Player player2) {
@@ -169,14 +161,14 @@ public class Game {
                 }
             }
             if(result.castlingType != null){
-                notation.createExpression(result.castlingType, checkmateMarker);
+                textArea.appendText(notation.createExpression(result.castlingType, checkmateMarker));
             }
             else {
                 System.out.println(result.movedFig.getClass().getSimpleName());
-                notation.createExpression(row, column, figureBeaten, result.movedFig.getClass().getSimpleName(), checkmateMarker, result.newFigure, result.correctiveFactor);
+                textArea.appendText(notation.createExpression(row, column, figureBeaten, result.movedFig.getClass().getSimpleName(), checkmateMarker, result.newFigure, result.correctiveFactor));
             }
         }
-        App.redraw(gc, 1000, 1000, board.getFields(), notation.getBoardNums(), notation.getBoardLetters(), notation.getExpressions());
+        App.redraw(gc, 1000, 1000, board.getFields(), notation.getBoardNums(), notation.getBoardLetters());
         for (ArrayList<Figure> element : board.getFields()) {
             System.out.println(element);
         }

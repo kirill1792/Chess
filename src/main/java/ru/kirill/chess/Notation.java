@@ -5,30 +5,37 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Notation {
-    private List<String> expressions = new ArrayList<>();
     private String boardNums = "87654321";
     private String boardLetters = "abcdefgh";
     private HashMap<String, String> figureCodes = new HashMap<>();
+    private int movesCount = 0;
 
     public Notation(){
         setMap();
     }
 
-    public List<String> getExpressions() {
-        return expressions;
+    public String createExpression(int rowTo, int columnTo, String figureBeaten, String figureMoved, String isCheckOrMate, Figure newFigure, String correctiveFactor){
+        movesCount += 1;
+        return postProcessEx(figureCodes.get(figureMoved) + correctiveFactor + figureBeaten + boardLetters.charAt(columnTo) + boardNums.charAt(rowTo) + newFigCheck(newFigure) + isCheckOrMate);
     }
 
-    public void createExpression(int rowTo, int columnTo, String figureBeaten, String figureMoved, String isCheckOrMate, Figure newFigure, String correctiveFactor){
-    String finalNotation = figureCodes.get(figureMoved) + correctiveFactor + figureBeaten + boardLetters.charAt(columnTo) + boardNums.charAt(rowTo) + newFigCheck(newFigure) + isCheckOrMate;
-    expressions.add(finalNotation);
-    }
-
-    public void createExpression(CastlingType castlingType, String isCheckOrMate){
+    public String createExpression(CastlingType castlingType, String isCheckOrMate){
+        movesCount += 1;
         if (castlingType.equals(CastlingType.SHORT)){
-            expressions.add("0-0" + isCheckOrMate);
+            return postProcessEx("0-0" + isCheckOrMate);
         }
         else if (castlingType.equals(CastlingType.LONG)){
-            expressions.add("0-0-0" + isCheckOrMate);
+            return postProcessEx("0-0-0" + isCheckOrMate);
+        }
+        return "";
+    }
+
+    private String postProcessEx(String expression){
+        if(movesCount % 2 == 0){
+            return expression + "\n";
+        }
+        else {
+            return ((movesCount - 1) / 2 + 1) + "." + expression + "   ";
         }
     }
 
